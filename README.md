@@ -84,7 +84,8 @@
 
 2. **Установка библиотек:**
    - Установите необходимые библиотеки с помощью команды:
-     ```pip install flask-wtf
+     ```
+     pip install flask-wtf
      pip install flask
      ```
 
@@ -157,15 +158,15 @@
 
 ##### **7.3 База данных SQLite**
 •	Таблица **`students`**:
-o	**`id`** (INTEGER, PRIMARY KEY).
-o	**`name`** (TEXT).
-o	**`age`** (INTEGER).
-o	**`school`** (TEXT).
-o	**`direction`** (TEXT).
-o	**`certificate`** (TEXT).
-o	**`phone number`** (INTEGER)
-o	**`class`** (INTEGER)
-o	**`address`** (TEXT)
+-	**`id`** (INTEGER, PRIMARY KEY).
+-	**`name`** (TEXT).
+-	**`age`** (INTEGER).
+-	**`school`** (TEXT).
+-	**`direction`** (TEXT).
+-	**`certificate`** (TEXT).
+-	**`phone number`** (INTEGER)
+-	**`class`** (INTEGER)
+-	**`address`** (TEXT)
 
 ---
 
