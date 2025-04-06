@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Регистрация ученика</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .card-registration {
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        .bg-gradient {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+        }
+        .form-control:focus {
+            border-color: #ff8a00;
+            box-shadow: 0 0 0 0.25rem rgba(255, 138, 0, 0.25);
+        }
+        .btn-warning {
+            background-color: #ff8a00;
+            border-color: #ff8a00;
+        }
+        .btn-warning:hover {
+            background-color: #e07b00;
+            border-color: #e07b00;
+        }
+        .dropdown-item:hover {
+            background-color: #ff8a00;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<section class="h-100 bg-gradient">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-10 col-xl-9">
+                <div class="card card-registration my-4">
+                    <div class="row g-0">
+                        <div class="col-xl-6 d-none d-xl-block">
+                            <img src="{{ url_for('static', filename='images/fon.jpg') }}"
+                                 alt="Sample photo" class="img-fluid h-100"
+                                 style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem; object-fit: cover;"/>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card-body p-md-5 text-black">
+                                <h3 class="mb-5 text-uppercase text-center fw-bold">Форма регистрации ученика</h3>
+
+                                {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                        <div class="alert alert-warning">
+                                            {% for message in messages %}
+                                                {{ message }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+
+                                <form action="/post" method="post" novalidate>
+                                    {{ form.hidden_tag() }}
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.name_student(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="name_student">ФИО Ребёнка</label>
+                                        {% for error in form.name_student.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.name_parent(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="name_parent">ФИО Родителя</label>
+                                        {% for error in form.name_parent.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.birthday(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="birthday">Дата рождения (ДД.ММ.ГГГГ)</label>
+                                        {% for error in form.birthday.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                {{ form.pasport_series(class="form-control form-control-lg") }}
+                                                <label class="form-label" id="pasport_series">Серия паспорта</label>
+                                                {% for error in form.pasport_series.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                {{ form.pasport_number(class="form-control form-control-lg") }}
+                                                <label class="form-label" id="pasport_number">Номер паспорта</label>
+                                                {% for error in form.pasport_number.errors %}
+                                                    <div class="text-danger small">{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.school(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="school">Школа</label>
+                                        {% for error in form.school.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.PFDO(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="PFDO">Номер сертификата ПФДО</label>
+                                        {% for error in form.PFDO.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.parent_phone(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="parent_phone">Телефон родителя</label>
+                                        {% for error in form.parent_phone.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.student_phone(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="student_phone">Телефон ученика</label>
+                                        {% for error in form.student_phone.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.school_class(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="school_class">Класс обучения</label>
+                                        {% for error in form.school_class.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        {{ form.adres_of_living(class="form-control form-control-lg") }}
+                                        <label class="form-label" id="adres_of_living">Адрес проживания</label>
+                                        {% for error in form.adres_of_living.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="d-flex justify-content-between pt-3">
+                                        <button type="reset" class="btn btn-light btn-lg">Сбросить</button>
+                                        {{ form.submit(class="btn btn-warning btn-lg") }}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.previousElementSibling.classList.add('active');
+        });
+        input.addEventListener('blur', function() {
+            if (this.value === '') {
+                this.previousElementSibling.classList.remove('active');
+            }
+        });
+        if (input.value !== '') {
+            input.previousElementSibling.classList.add('active');
+        }
+    });
+</script>
+</body>
+</html>
