@@ -57,12 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
             button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Формирование...';
             button.disabled = true;
 
-            // Имитация загрузки
+
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.disabled = false;
 
-                // Уведомление об успехе
                 const toast = document.createElement('div');
                 toast.className = 'position-fixed bottom-0 end-0 p-3';
                 toast.style.zIndex = '1100';
@@ -88,14 +87,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Инициализация
+
     updateTime();
     setInterval(updateTime, 60000); // Обновление времени каждую минуту
 
     window.addEventListener('scroll', animateOnScroll);
     animateOnScroll(); // Запуск при загрузке
 
-    // Подсветка активного пункта меню при скролле
+
     const sections = document.querySelectorAll('section');
     const menuItems = document.querySelectorAll('.sidebar-menu li');
 

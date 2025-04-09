@@ -92,7 +92,8 @@ body {
     transform: translateX(5px);
 }
 
-/* Основное содержимое */
+
+
 .main-content {
     margin-left: 250px;
     padding: 20px;
@@ -161,36 +162,6 @@ body {
 .report-form .form-select:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25);
-}
-
-/* Статистика */
-.stat-card {
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.1);
-}
-
-.stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.stat-label {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.stat-change {
-    font-size: 0.8rem;
-    margin-top: 5px;
 }
 
 /* Анимации */

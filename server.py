@@ -26,13 +26,17 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/students', methods=['GET'])
+def students():
+    session = db_session.create_session()
+    students = session.query(Student).all()
+    return render_template("students.html", students=students)
+
+
 @app.route('/post', methods=['POST', 'GET'])
 def post():
     form = RegistrationForm()
-    print("!!!!!")
-    print(form.validate_on_submit())
     if form.validate_on_submit():
-        print("!!!!!!!!!!!!!!!!!!!!!!!")
         session = db_session.create_session()
         if session.query(Student).filter(Student.name_student == form.name_student.data).first():
             return render_template("registration.html", form=form, message="Такой ученик уже существует")

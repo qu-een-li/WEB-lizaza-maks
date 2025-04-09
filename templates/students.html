@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="static/css/style2.css">
+</head>
+<body>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ФИО ребёнка</th>
+            <th>Дата рождения</th>
+            <th>Серия паспорта</th>
+            <th>Номер паспорта</th>
+            <th>Школа</th>
+            <th>Номер сертификата ПФДО</th>
+            <th>Телефон ученика</th>
+            <th>Класс</th>
+            <th>Адрес</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{student.name_student}}</td>
+                <td>{{student.birthday}}</td>
+                <td>{{student.pasport_series}}</td>
+                <td>{{student.pasport_number}}</td>
+                <td>{{student.school}}</td>
+                <td>{{student.PFDO}}</td>
+                <td>{{student.student_phone}}</td>
+                <td>{{student.school_class}}</td>
+                <td>{{student.adres_of_living}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
