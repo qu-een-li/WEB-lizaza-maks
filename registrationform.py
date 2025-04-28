@@ -9,7 +9,7 @@ class RegistrationForm(FlaskForm):
     birthday = StringField('Дата Рождения Ребёнка', validators=[DataRequired()])
     pasport_number = IntegerField('Номер Паспорта', validators=[DataRequired()])
     pasport_series = IntegerField('Серия Паспорта', validators=[DataRequired()])
-    region = SelectField('Регион', choices=[], validators=[DataRequired()])
+    region = SelectField('Регион', choices=[('1086244', 'Республика Северная Осетия — Алания')], validators=[DataRequired()])
     city = SelectField('Город', choices=[], validators=[DataRequired()])
     school = SelectField('Школа', choices=[], validators=[DataRequired()])
     PFDO = IntegerField('ПФДО', validators=[DataRequired()])

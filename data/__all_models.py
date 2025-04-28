@@ -1,1 +1,1 @@
-from . import students, ways, list_of_teachers, list_of_groups, group_student_id
+from . import group_student_id, students, list_of_groups, ways, list_of_teachers
