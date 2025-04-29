@@ -11,14 +11,22 @@ from data.ways import Way
 from flask_login import LoginManager, login_user, logout_user
 from flask import jsonify
 
+
+from api.api_regions import regions_api, get_regions_data
+from api.api_cities import cities_api, get_cities_data
+from api.api_schools import schools_api, get_schools_data
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = KEY_CSRF
+
+app.register_blueprint(regions_api)
+app.register_blueprint(cities_api)
+app.register_blueprint(schools_api)
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-SERVICE_KEY = "b23f635fb23f635fb23f635f26b110e9c3bb23fb23f635fda3f614c627d359f88d1a62e"
-API_VERSION = '5.199'
-REGION_ID = 1086244
 
 
 @login_manager.user_loader
@@ -42,76 +50,41 @@ def students():
 @app.route('/post', methods=['POST', 'GET'])
 def post():
     form = RegistrationForm()
+
+    if request.method == "POST":
+        if "region" in request.form:
+            region_id = request.form["region"]
+            cities = get_cities_data(int(region_id))
+            form.city.choices = [(str(c["id"]), c["title"]) for c in cities]
+            form.school.choices = []
+
+        if "city" in request.form:
+            city_id = request.form["city"]
+            schools = get_schools_data(int(city_id))
+            form.school.choices = [(str(s["id"]), s["title"]) for s in schools]
+
+
     if form.validate_on_submit():
         session = db_session.create_session()
         if session.query(Student).filter(Student.name_student == form.name_student.data).first():
             return render_template("registration.html", form=form, message="Такой ученик уже существует")
+
+        city_title = next((city["title"] for city in get_cities_data(int(form.region.data))
+                           if str(city["id"]) == form.city.data), "")
+        school_title = next((school["title"] for school in get_schools_data(int(form.city.data))
+                             if str(school["id"]) == form.school.data), "")
+
         user = Student(name_student=form.name_student.data, name_parent=form.name_parent.data,
                        birthday=form.birthday.data, PFDO=form.PFDO.data,
-                       pasport_number=form.pasport_number.data, pasport_series=form.pasport_series.data,
-                       school=form.school.data, parent_phone=form.parent_phone.data,
+                       document=form.document.data,
+                       city=city_title,
+                       school=school_title, parent_phone=form.parent_phone.data,
                        student_phone=form.student_phone.data, school_class=form.school_class.data,
-                       adres_of_living=form.school.data)
+                       adres_of_living=form.adres_of_living.data)
         session.add(user)
         session.commit()
         return redirect("/post")
     return render_template("registration.html", form=form)
-
-
-@app.route('/api/regions', methods=['GET'])
-def get_regions():
-    regions = [{
-        "id": REGION_ID,
-        "title": "Республика Северная Осетия — Алания"
-    }]
-    return jsonify(regions)
-
-
-@app.route('/api/cities/<int:region_id>', methods=['GET'])
-def get_cities(region_id):
-    url = 'https://api.vk.com/method/database.getCities'
-    params = {
-        'access_token': SERVICE_KEY,
-        'v': API_VERSION,
-        'region_id': region_id,
-        'need_all': 1,
-        'lang': 'ru',
-        'count': 1000,
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-        if 'response' in data and 'items' in data['response']:
-            cities = [{'id': city['id'], 'title': city['title']} for city in data['response']['items']]
-            return jsonify(cities)
-        return jsonify([])
-    except Exception as e:
-        print(f"Ошибка при выборе городов: {e}")
-        return jsonify([])
-
-
-@app.route('/api/schools/<int:city_id>', methods=['GET'])
-def get_schools(city_id):
-    url = 'https://api.vk.com/method/database.getSchools'
-    params = {
-        'access_token': SERVICE_KEY,
-        'v': API_VERSION,
-        'city_id': city_id,
-        'count': 1000,
-        'lang': 'ru'
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-        if 'response' in data and 'items' in data['response']:
-            schools = [{'id': school['id'], 'title': school['title']} for school in data['response']['items']]
-            return jsonify(schools)
-        return jsonify([])
-    except Exception as e:
-        print(f"Ошибка при выборе школ: {e}")
-        return jsonify([])
 
 
 if __name__ == '__main__':

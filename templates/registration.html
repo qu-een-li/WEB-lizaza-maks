@@ -40,16 +40,17 @@
 {% block content %}
 <div class="container mt-4">
     <div class="registration-container">
-        <h2 class="mb-4 text-center"><i class="bi bi-person-plus-fill me-2 text-danger"></i>Форма регистрации ученика</h2>
+        <h2 class="mb-4 text-center"><i class="bi bi-person-plus-fill me-2 text-danger"></i>Форма регистрации ученика
+        </h2>
 
         {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-warning">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if messages %}
+        <div class="alert alert-warning">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
 
         <form action="/post" method="post" novalidate class="needs-validation">
@@ -60,14 +61,14 @@
                     <label for="name_student" class="form-label">ФИО Ребёнка</label>
                     {{ form.name_student(class="form-control") }}
                     {% for error in form.name_student.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="name_parent" class="form-label">ФИО Родителя</label>
                     {{ form.name_parent(class="form-control") }}
                     {% for error in form.name_parent.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -76,47 +77,39 @@
                 <label for="birthday" class="form-label">Дата рождения (ДД.ММ.ГГГГ)</label>
                 {{ form.birthday(class="form-control") }}
                 {% for error in form.birthday.errors %}
-                    <div class="invalid-feedback">{{ error }}</div>
+                <div class="invalid-feedback">{{ error }}</div>
                 {% endfor %}
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6 mb-3">
-                    <label for="pasport_series" class="form-label">Серия паспорта</label>
-                    {{ form.pasport_series(class="form-control") }}
-                    {% for error in form.pasport_series.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="pasport_number" class="form-label">Номер паспорта</label>
-                    {{ form.pasport_number(class="form-control") }}
-                    {% for error in form.pasport_number.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
-                    {% endfor %}
-                </div>
+            <div class="mb-3">
+                <label for="document" class="form-label">Документ, удостоверяющий личность (паспорт/свидетельство о
+                    рождении)</label>
+                {{ form.document(class="form-control", placeholder="Серия и номер паспорта или номер свидетельства о рождении") }}
+                {% for error in form.document.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-4 mb-3">
                     <label for="region" class="form-label">Регион</label>
-                    {{ form.region(class="form-select") }}
+                    {{ form.region(class="form-select", onchange="this.form.submit()") }}
                     {% for error in form.region.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="city" class="form-label">Город</label>
-                    {{ form.city(class="form-select") }}
+                    {{ form.city(class="form-select", onchange="this.form.submit()") }}
                     {% for error in form.city.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="school" class="form-label">Школа</label>
                     {{ form.school(class="form-select") }}
                     {% for error in form.school.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -126,14 +119,14 @@
                     <label for="parent_phone" class="form-label">Телефон родителя</label>
                     {{ form.parent_phone(class="form-control") }}
                     {% for error in form.parent_phone.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="student_phone" class="form-label">Телефон ученика</label>
                     {{ form.student_phone(class="form-control") }}
                     {% for error in form.student_phone.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -143,21 +136,21 @@
                     <label for="school_class" class="form-label">Класс обучения</label>
                     {{ form.school_class(class="form-control") }}
                     {% for error in form.school_class.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="PFDO" class="form-label">Номер ПФДО</label>
                     {{ form.PFDO(class="form-control") }}
                     {% for error in form.PFDO.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="adres_of_living" class="form-label">Адрес проживания</label>
                     {{ form.adres_of_living(class="form-control") }}
                     {% for error in form.adres_of_living.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
+                    <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -173,58 +166,58 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const regionSelect = document.querySelector('#region');
-    const citySelect = document.querySelector('#city');
-    const schoolSelect = document.querySelector('#school');
+    document.addEventListener('DOMContentLoaded', function() {
+        const regionSelect = document.querySelector('#region');
+        const citySelect = document.querySelector('#city');
+        const schoolSelect = document.querySelector('#school');
 
-    fetch('/api/regions')
-        .then(response => response.json())
-        .then(regions => {
-            regionSelect.innerHTML = regions.map(r =>
-                `<option value="${r.id}">${r.title}</option>`
-            ).join('');
+        fetch('/api/regions')
+            .then(response => response.json())
+            .then(regions => {
+                regionSelect.innerHTML = regions.map(r =>
+                    `<option value="${r.id}">${r.title}</option>`
+                ).join('');
 
 
-            const rsoOption = Array.from(regionSelect.options).find(opt =>
-                opt.text.includes('Республика Северная Осетия — Алания')
-            );
-            if (rsoOption) {
-                rsoOption.selected = true;
-                regionSelect.dispatchEvent(new Event('change'));
+                const rsoOption = Array.from(regionSelect.options).find(opt =>
+                    opt.text.includes('Республика Северная Осетия — Алания')
+                );
+                if (rsoOption) {
+                    rsoOption.selected = true;
+                    regionSelect.dispatchEvent(new Event('change'));
+                }
+            });
+
+        //меняем регион
+        regionSelect.addEventListener('change', function() {
+            const regionId = this.value;
+            citySelect.innerHTML = '<option value="">Выберите город</option>';
+            schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+
+            if (regionId) {
+                fetch(`/api/cities/${regionId}`)
+                    .then(response => response.json())
+                    .then(cities => {
+                        citySelect.innerHTML = '<option value="">Выберите город</option>' +
+                            cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+                    });
             }
         });
 
-    //меняем регион
-    regionSelect.addEventListener('change', function() {
-        const regionId = this.value;
-        citySelect.innerHTML = '<option value="">Выберите город</option>';
-        schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+        //меняем город
+        citySelect.addEventListener('change', function() {
+            const cityId = this.value;
+            schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
 
-        if (regionId) {
-            fetch(`/api/cities/${regionId}`)
-                .then(response => response.json())
-                .then(cities => {
-                    citySelect.innerHTML = '<option value="">Выберите город</option>' +
-                        cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
-                });
-        }
+            if (cityId) {
+                fetch(`/api/schools/${cityId}`)
+                    .then(response => response.json())
+                    .then(schools => {
+                        schoolSelect.innerHTML = '<option value="">Выберите школу</option>' +
+                            schools.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+                    });
+            }
+        });
     });
-
-    //меняем город
-    citySelect.addEventListener('change', function() {
-        const cityId = this.value;
-        schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
-
-        if (cityId) {
-            fetch(`/api/schools/${cityId}`)
-                .then(response => response.json())
-                .then(schools => {
-                    schoolSelect.innerHTML = '<option value="">Выберите школу</option>' +
-                        schools.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
-                });
-        }
-    });
-});
 </script>
 {% endblock %}
