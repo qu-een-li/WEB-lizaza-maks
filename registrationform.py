@@ -23,7 +23,6 @@ class RegistrationForm(FlaskForm):
     school_class = IntegerField('Класс обучения ребёнка', validators=[DataRequired()])
     adres_of_living = StringField('Адрес Проживания', validators=[DataRequired()])
     submit = SubmitField('Зарегистрироваться')
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -31,7 +30,8 @@ class RegistrationForm(FlaskForm):
         regions = get_regions_data()
         self.region.choices = [(str(r['id']), r['title']) for r in regions]
 
-        if self.region.data:
+        if self.region.data: #список регионов в json-формате из запроса с помощью url и параметров
+            # (это в файле api_schools.py И api_cities.py)
             cities = get_cities_data(int(self.region.data)) #id регионв
             self.city.choices = [(str(c['id']), c['title']) for c in cities]
 

@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Регистрация ученика | IT-Куб Владикавказ{% endblock %}
+{% block title %}Поиск учащихся | IT-Куб Владикавказ{% endblock %}
 
-{% block page_title %}Регистрация нового ученика{% endblock %}
-{% block page_subtitle %}Заполните все необходимые поля{% endblock %}
+{% block page_title %}Поиск учащихся{% endblock %}
+{% block page_subtitle %}Введите параметры для поиска{% endblock %}
+
 
 {% block extra_css %}
 <style>
-    .registration-container {
+    .search-container {
         background-color: white;
         border-radius: 10px;
         padding: 2rem;
@@ -22,12 +23,12 @@
         border-color: #dc3545;
         box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
     }
-    .btn-register {
+    .btn-search {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
-    .btn-register:hover {
+    .btn-search:hover {
         background-color: #bb2d3b;
         border-color: #b02a37;
     }
@@ -39,9 +40,8 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="registration-container">
-        <h2 class="mb-4 text-center"><i class="bi bi-person-plus-fill me-2 text-danger"></i>Форма регистрации ученика
-        </h2>
+    <div class="search-container">
+        <h2 class="mb-4 text-center"><i class="bi bi-search me-2 text-danger"></i>Форма поиска учеников</h2>
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -53,7 +53,7 @@
         {% endif %}
         {% endwith %}
 
-        <form action="/post" method="post" novalidate class="needs-validation">
+        <form action="/search" method="post" novalidate class="needs-validation">
             {{ form.hidden_tag() }}
 
             <div class="row mb-3">
@@ -155,14 +155,15 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between pt-3">
-                <button type="reset" class="btn btn-outline-secondary">Сбросить</button>
-                {{ form.submit(class="btn btn-register") }}
+            <div class="d-flex justify-content-end pt-3">
+                <button type="reset" class="btn btn-outline-secondary me-3">Сбросить</button>
+                {{ form.submit(class="btn btn-search") }}
             </div>
         </form>
     </div>
 </div>
 {% endblock %}
+
 
 {% block extra_js %}
 <script>
@@ -171,24 +172,15 @@
         const citySelect = document.querySelector('#city');
         const schoolSelect = document.querySelector('#school');
 
+        // Загрузка регионов
         fetch('/api/regions')
             .then(response => response.json())
             .then(regions => {
-                regionSelect.innerHTML = regions.map(r =>
-                    `<option value="${r.id}">${r.title}</option>`
-                ).join('');
-
-
-                const rsoOption = Array.from(regionSelect.options).find(opt =>
-                    opt.text.includes('Республика Северная Осетия — Алания')
-                );
-                if (rsoOption) {
-                    rsoOption.selected = true;
-                    regionSelect.dispatchEvent(new Event('change'));
-                }
+                regionSelect.innerHTML = '<option value="">Выберите регион</option>' +
+                    regions.map(r => `<option value="${r.id}">${r.title}</option>`).join('');
             });
 
-        //меняем регион
+        // Обработка изменения региона
         regionSelect.addEventListener('change', function() {
             const regionId = this.value;
             citySelect.innerHTML = '<option value="">Выберите город</option>';
@@ -204,7 +196,7 @@
             }
         });
 
-        //меняем город
+        // Обработка изменения города
         citySelect.addEventListener('change', function() {
             const cityId = this.value;
             schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
