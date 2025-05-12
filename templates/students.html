@@ -12,12 +12,17 @@
         border-radius: 10px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        width: 98%;
+        margin: 0 auto;
     }
     .table th {
         background-color: #dc3545;
         color: white;
         position: sticky;
         top: 0;
+    }
+    .table td {
+        vertical-align: middle;
     }
     .table-hover tbody tr:hover {
         background-color: rgba(220, 53, 69, 0.1);
@@ -26,11 +31,19 @@
         max-height: 70vh;
         overflow-y: auto;
     }
+    .edit-icon {
+        color: #6c757d;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+    .edit-icon:hover {
+        color: #dc3545;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4" style="max-width: 98%;">
     <div class="students-table">
         <div class="table-container">
             <table class="table table-hover">
@@ -45,6 +58,7 @@
                         <th>Телефон ученика</th>
                         <th>Класс</th>
                         <th>Адрес</th>
+                        <th style="width: 30px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +73,9 @@
                             <td>{{ student.student_phone }}</td>
                             <td>{{ student.school_class }}</td>
                             <td>{{ student.adres_of_living }}</td>
+<!--                            <td><i class="bi bi-pencil-square edit-icon"></i></td>-->
+
+                            <td><a href="/edit_student/{{ student.id }}"><i class="bi bi-pencil edit-icon"></i></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

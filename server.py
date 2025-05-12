@@ -12,11 +12,9 @@ from flask_login import LoginManager, login_user, logout_user
 from flask import jsonify
 from data.search_stud import SearchForm
 
-
 from api.api_regions import regions_api, get_regions_data
 from api.api_cities import cities_api, get_cities_data
 from api.api_schools import schools_api, get_schools_data
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = KEY_CSRF
@@ -24,7 +22,6 @@ app.config['SECRET_KEY'] = KEY_CSRF
 app.register_blueprint(regions_api)
 app.register_blueprint(cities_api)
 app.register_blueprint(schools_api)
-
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -48,8 +45,8 @@ def students():
     return render_template("students.html", students=students)
 
 
-@app.route('/post', methods=['POST', 'GET'])
-def post():
+@app.route('/add', methods=['POST', 'GET'])
+def add():
     form = RegistrationForm()
 
     if request.method == "POST":
@@ -64,10 +61,9 @@ def post():
             schools = get_schools_data(int(city_id))
             form.school.choices = [(str(s["id"]), s["title"]) for s in schools]
 
-
     if form.validate_on_submit():
         session = db_session.create_session()
-        if session.query(Student).filter(Student.name_student == form.name_student.data).first():
+        if session.query(Student).filter(Student.PFDO == form.PFDO.data).first():
             return render_template("registration.html", form=form, message="Такой ученик уже существует")
 
         city_title = next((city["title"] for city in get_cities_data(int(form.region.data))
@@ -84,7 +80,7 @@ def post():
                        adres_of_living=form.adres_of_living.data)
         session.add(user)
         session.commit()
-        return redirect("/post")
+        return redirect("/add")
     return render_template("registration.html", form=form)
 
 
@@ -123,6 +119,47 @@ def search():
         students = query.all()
         return render_template("students.html", students=students)
     return render_template("search.html", form=form)
+
+
+@app.route('/edit_student/<int:student_id>', methods=['GET', 'POST'])
+def edit_student(student_id):
+    db_sess = db_session.create_session()
+    student = db_sess.query(Student).get(student_id)
+
+    if not student:
+        return redirect('/students')
+
+    form = RegistrationForm(obj=student)
+
+    curr_city = student.city
+    curr_school = student.school
+
+    if request.method == "POST":
+        update_student = Student(id=student_id, name_student=form.name_student.data, name_parent=form.name_parent.data,
+                                 birthday=form.birthday.data,
+                                 PFDO=form.PFDO.data, city=student.city, school=student.school,
+                                 student_phone=form.student_phone.data,
+                                 parent_phone=form.parent_phone.data, school_class=form.school_class.data,
+                                 document=form.document.data,
+                                 adres_of_living=form.adres_of_living.data)
+        db_sess.delete(student)
+        db_sess.add(update_student)
+        db_sess.commit()
+        return redirect('/students')
+
+    if form.validate_on_submit():
+        form.populate_obj(student)
+        city_title = next((city["title"] for city in get_cities_data(int(form.region.data))
+                           if str(city["id"]) == form.city.data), "")
+        school_title = next((school["title"] for school in get_schools_data(int(form.city.data))
+                             if str(school["id"]) == form.school.data), "")
+
+        student.city = city_title
+        student.school = school_title
+        db_sess.commit()
+        return redirect('/students')
+
+    return render_template("edit_student.html", form=form, student_id=student_id, current_city=curr_city, current_school=curr_school)
 
 
 if __name__ == '__main__':

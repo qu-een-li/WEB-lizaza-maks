@@ -1,0 +1,5 @@
+requests~=2.32.3
+Flask~=3.1.0
+SQLAlchemy~=2.0.40
+WTForms~=3.2.1
+Flask-Login~=0.6.3

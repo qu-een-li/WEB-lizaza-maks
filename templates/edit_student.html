@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Регистрация ученика | IT-Куб Владикавказ{% endblock %}
+{% block title %}Редактирование учащегося | IT-Куб Владикавказ{% endblock %}
 
-{% block page_title %}Регистрация нового ученика{% endblock %}
-{% block page_subtitle %}Заполните все необходимые поля{% endblock %}
+{% block page_title %}Редактирование учащегося{% endblock %}
+{% block page_subtitle %}Измените необходимые данные{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -40,16 +40,19 @@
 {% block content %}
 <div class="container mt-4">
     <div class="registration-container">
-        <h2 class="mb-4 text-center"><i class="bi bi-person-plus-fill me-2 text-danger"></i>Форма регистрации ученика
-        </h2>
+        <h2 class="mb-4 text-center"><i class="bi bi-person-lines-fill me-2 text-danger"></i>Форма редактирования ученика</h2>
 
-        {% if message %}
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
         <div class="alert alert-warning">
+            {% for message in messages %}
             {{ message }}
+            {% endfor %}
         </div>
         {% endif %}
+        {% endwith %}
 
-        <form action="/add" method="post" novalidate class="needs-validation">
+        <form action="/edit_student/{{ student_id }}" method="post" novalidate class="needs-validation">
             {{ form.hidden_tag() }}
 
             <div class="row mb-3">
@@ -78,8 +81,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="document" class="form-label">Документ, удостоверяющий личность (паспорт/свидетельство о
-                    рождении)</label>
+                <label for="document" class="form-label">Документ, удостоверяющий личность</label>
                 {{ form.document(class="form-control", placeholder="Серия и номер паспорта или номер свидетельства о рождении") }}
                 {% for error in form.document.errors %}
                 <div class="invalid-feedback">{{ error }}</div>
@@ -152,8 +154,8 @@
             </div>
 
             <div class="d-flex justify-content-between pt-3">
-                <button type="reset" class="btn btn-outline-secondary">Сбросить</button>
-                {{ form.submit(class="btn btn-register") }}
+                <a href="/students" class="btn btn-outline-secondary">Отмена</a>
+                {{ form.submit(class="btn btn-register", value="Сохранить изменения") }}
             </div>
         </form>
     </div>
@@ -174,7 +176,6 @@
                     `<option value="${r.id}">${r.title}</option>`
                 ).join('');
 
-
                 const rsoOption = Array.from(regionSelect.options).find(opt =>
                     opt.text.includes('Республика Северная Осетия — Алания')
                 );
@@ -182,6 +183,24 @@
                     rsoOption.selected = true;
                     regionSelect.dispatchEvent(new Event('change'));
                 }
+
+                fetch(`/api/cities/${regionSelect.value}`)
+                    .then(response => response.json())
+                    .then(cities => {
+                        citySelect.innerHTML = '<option value="">Выберите город</option>' +
+                            cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+
+                        const currentCity = '{{ current_city }}';
+                        if (currentCity) {
+                            const cityOption = Array.from(citySelect.options).find(opt =>
+                                opt.text === currentCity
+                            );
+                            if (cityOption) {
+                                cityOption.selected = true;
+                                citySelect.dispatchEvent(new Event('change'));
+                            }
+                        }
+                    });
             });
 
         //меняем регион
@@ -211,6 +230,16 @@
                     .then(schools => {
                         schoolSelect.innerHTML = '<option value="">Выберите школу</option>' +
                             schools.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+
+                        const currentSchool = '{{ current_school }}';
+                        if (currentSchool) {
+                            const schoolOption = Array.from(schoolSelect.options).find(opt =>
+                                opt.text === currentSchool
+                            );
+                            if (schoolOption) {
+                                schoolOption.selected = true;
+                            }
+                        }
                     });
             }
         });
