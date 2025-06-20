@@ -134,6 +134,18 @@ def edit_student(student_id):
     curr_city = student.city
     curr_school = student.school
 
+    if form.validate_on_submit():
+        form.populate_obj(student)
+        city_title = next((city["title"] for city in get_cities_data(int(form.region.data))
+                           if str(city["id"]) == form.city.data), "")
+        school_title = next((school["title"] for school in get_schools_data(int(form.city.data))
+                             if str(school["id"]) == form.school.data), "")
+
+        student.city = city_title
+        student.school = school_title
+        db_sess.commit()
+        return redirect('/students')
+
     if request.method == "POST":
         update_student = Student(id=student_id, name_student=form.name_student.data, name_parent=form.name_parent.data,
                                  birthday=form.birthday.data,
@@ -144,18 +156,6 @@ def edit_student(student_id):
                                  adres_of_living=form.adres_of_living.data)
         db_sess.delete(student)
         db_sess.add(update_student)
-        db_sess.commit()
-        return redirect('/students')
-
-    if form.validate_on_submit():
-        form.populate_obj(student)
-        city_title = next((city["title"] for city in get_cities_data(int(form.region.data))
-                           if str(city["id"]) == form.city.data), "")
-        school_title = next((school["title"] for school in get_schools_data(int(form.city.data))
-                             if str(school["id"]) == form.school.data), "")
-
-        student.city = city_title
-        student.school = school_title
         db_sess.commit()
         return redirect('/students')
 

@@ -164,85 +164,78 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const regionSelect = document.querySelector('#region');
-        const citySelect = document.querySelector('#city');
-        const schoolSelect = document.querySelector('#school');
+document.addEventListener('DOMContentLoaded', function() {
+    const regionSelect = document.querySelector('#region');
+    const citySelect = document.querySelector('#city');
+    const schoolSelect = document.querySelector('#school');
+    const currentCity = '{{ current_city }}';
+    const currentSchool = '{{ current_school }}';
 
-        fetch('/api/regions')
+    // загрука городов
+    function loadCities(regionId) {
+        fetch(`/api/cities/${regionId}`)
             .then(response => response.json())
-            .then(regions => {
-                regionSelect.innerHTML = regions.map(r =>
-                    `<option value="${r.id}">${r.title}</option>`
-                ).join('');
+            .then(cities => {
+                citySelect.innerHTML = '<option value="">Выберите город</option>' +
+                    cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
 
-                const rsoOption = Array.from(regionSelect.options).find(opt =>
-                    opt.text.includes('Республика Северная Осетия — Алания')
-                );
-                if (rsoOption) {
-                    rsoOption.selected = true;
-                    regionSelect.dispatchEvent(new Event('change'));
+                // старый город в редактировании учащихся остался в поле
+                if (currentCity) {
+                    const cityOption = Array.from(citySelect.options).find(opt =>
+                        opt.text === currentCity
+                    );
+                    if (cityOption) {
+                        cityOption.selected = true;
+                        loadSchools(cityOption.value);
+                    }
                 }
-
-                fetch(`/api/cities/${regionSelect.value}`)
-                    .then(response => response.json())
-                    .then(cities => {
-                        citySelect.innerHTML = '<option value="">Выберите город</option>' +
-                            cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
-
-                        const currentCity = '{{ current_city }}';
-                        if (currentCity) {
-                            const cityOption = Array.from(citySelect.options).find(opt =>
-                                opt.text === currentCity
-                            );
-                            if (cityOption) {
-                                cityOption.selected = true;
-                                citySelect.dispatchEvent(new Event('change'));
-                            }
-                        }
-                    });
             });
+    }
 
-        //меняем регион
-        regionSelect.addEventListener('change', function() {
-            const regionId = this.value;
-            citySelect.innerHTML = '<option value="">Выберите город</option>';
-            schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+    // загрузка школ
+    function loadSchools(cityId) {
+        fetch(`/api/schools/${cityId}`)
+            .then(response => response.json())
+            .then(schools => {
+                schoolSelect.innerHTML = '<option value="">Выберите школу</option>' +
+                    schools.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
 
-            if (regionId) {
-                fetch(`/api/cities/${regionId}`)
-                    .then(response => response.json())
-                    .then(cities => {
-                        citySelect.innerHTML = '<option value="">Выберите город</option>' +
-                            cities.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
-                    });
-            }
-        });
+                // старая школа остается в поле на страничке редактирваония
+                if (currentSchool) {
+                    const schoolOption = Array.from(schoolSelect.options).find(opt =>
+                        opt.text === currentSchool
+                    );
+                    if (schoolOption) {
+                        schoolOption.selected = true;
+                    }
+                }
+            });
+    }
 
-        //меняем город
-        citySelect.addEventListener('change', function() {
-            const cityId = this.value;
-            schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
-
-            if (cityId) {
-                fetch(`/api/schools/${cityId}`)
-                    .then(response => response.json())
-                    .then(schools => {
-                        schoolSelect.innerHTML = '<option value="">Выберите школу</option>' +
-                            schools.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
-
-                        const currentSchool = '{{ current_school }}';
-                        if (currentSchool) {
-                            const schoolOption = Array.from(schoolSelect.options).find(opt =>
-                                opt.text === currentSchool
-                            );
-                            if (schoolOption) {
-                                schoolOption.selected = true;
-                            }
-                        }
-                    });
-            }
-        });
+    regionSelect.addEventListener('change', function() {
+        if (this.value) {
+            loadCities(this.value);
+            schoolSelect.innerHTML = '<option value="">Сначала выберите город</option>';
+        }
     });
+
+    citySelect.addEventListener('change', function() {
+        if (this.value) {
+            loadSchools(this.value);
+        }
+    });
+
+    fetch('/api/regions')
+        .then(response => response.json())
+        .then(regions => {
+            const rsoOption = regions.find(r =>
+                r.title.includes('Республика Северная Осетия — Алания')
+            );
+            if (rsoOption) {
+                regionSelect.value = rsoOption.id;
+                loadCities(rsoOption.id);
+            }
+        });
+});
 </script>
 {% endblock %}
